@@ -24,6 +24,7 @@ import static org.mockito.Mockito.when;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_AGENT_ID;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_BUCKET_NAME;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_DATA_SOURCE_ID;
+import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_GUARDRAIL_ARN;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_GUARDRAIL_ID;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_KNOWLEDGE_BASE_ID;
 import static software.amazon.opentelemetry.javaagent.providers.AwsAttributeKeys.AWS_LAMBDA_NAME;
@@ -758,13 +759,19 @@ class AwsMetricAttributeGeneratorTest {
 
     // Validate behaviour of AWS_GUARDRAIL_ID attribute, then remove it.
     mockAttribute(AWS_GUARDRAIL_ID, "test_guardrail_id");
+    mockAttribute(
+        AWS_GUARDRAIL_ARN, "arn:aws:bedrock:us-west-2:123456789012:guardrail/test_guardrail_id");
     validateRemoteResourceAttributes("AWS::Bedrock::Guardrail", "test_guardrail_id");
     mockAttribute(AWS_GUARDRAIL_ID, null);
+    mockAttribute(AWS_GUARDRAIL_ARN, null);
 
     // Validate behaviour of AWS_GUARDRAIL_ID attribute with special chars(^), then remove it.
     mockAttribute(AWS_GUARDRAIL_ID, "test_guardrail_^id");
+    mockAttribute(
+        AWS_GUARDRAIL_ARN, "arn:aws:bedrock:us-west-2:123456789012:guardrail/test_guardrail_^id");
     validateRemoteResourceAttributes("AWS::Bedrock::Guardrail", "test_guardrail_^^id");
     mockAttribute(AWS_GUARDRAIL_ID, null);
+    mockAttribute(AWS_GUARDRAIL_ARN, null);
 
     // Validate behaviour of GEN_AI_REQUEST_MODEL attribute, then remove it.
     mockAttribute(GEN_AI_REQUEST_MODEL, "test.service_id");

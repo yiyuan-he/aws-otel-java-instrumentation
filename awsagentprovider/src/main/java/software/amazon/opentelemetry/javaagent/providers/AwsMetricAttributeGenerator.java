@@ -455,7 +455,8 @@ final class AwsMetricAttributeGenerator implements MetricAttributeGenerator {
       } else if (isKeyPresent(span, AWS_GUARDRAIL_ID)) {
         remoteResourceType = Optional.of(NORMALIZED_BEDROCK_SERVICE_NAME + "::Guardrail");
         remoteResourceIdentifier =
-            Optional.ofNullable(escapeDelimiters(span.getAttributes().get(AWS_GUARDRAIL_ID)));
+            getBedrockGuardrailIdentifierFromArn(
+                Optional.ofNullable(escapeDelimiters(span.getAttributes().get(AWS_GUARDRAIL_ARN))));
         cloudformationPrimaryIdentifier =
             Optional.ofNullable(escapeDelimiters(span.getAttributes().get(AWS_GUARDRAIL_ARN)));
       } else if (isKeyPresent(span, GEN_AI_REQUEST_MODEL)) {
@@ -527,6 +528,11 @@ final class AwsMetricAttributeGenerator implements MetricAttributeGenerator {
       return Optional.of(resourceArn.getResource().toString().split(":")[1]);
     }
     return arbitraryName;
+  }
+
+  private static Optional<String> getBedrockGuardrailIdentifierFromArn(Optional<String> stringArn) {
+    Arn resourceArn = Arn.fromString(stringArn.get());
+    return Optional.of(resourceArn.getResource().toString().split(":")[1]);
   }
 
   private static Optional<String> getSecretsManagerResourceNameFromArn(Optional<String> stringArn) {
