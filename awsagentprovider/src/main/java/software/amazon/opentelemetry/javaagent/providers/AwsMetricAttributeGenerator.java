@@ -531,8 +531,9 @@ final class AwsMetricAttributeGenerator implements MetricAttributeGenerator {
   }
 
   private static Optional<String> getBedrockGuardrailIdentifierFromArn(Optional<String> stringArn) {
-    Arn resourceArn = Arn.fromString(stringArn.get());
-    return Optional.of(resourceArn.getResource().toString().split(":")[1]);
+    String[] arnParts = stringArn.get().split(":");
+    String resourceName = arnParts[arnParts.length - 1];
+    return Optional.of(resourceName.split("/")[1]);
   }
 
   private static Optional<String> getSecretsManagerResourceNameFromArn(Optional<String> stringArn) {
