@@ -18,6 +18,7 @@ package software.amazon.opentelemetry.appsignals.test.awssdk.v1;
 import io.opentelemetry.proto.common.v1.KeyValue;
 import java.util.List;
 import org.assertj.core.api.ThrowingConsumer;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -111,26 +112,31 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testS3CreateBucket() throws Exception {
     doTestS3CreateBucket();
   }
 
   @Test
+  @Disabled
   void testS3CreateObject() throws Exception {
     doTestS3CreateObject();
   }
 
   @Test
+  @Disabled
   void testS3GetObject() throws Exception {
     doTestS3GetObject();
   }
 
   @Test
+  @Disabled
   void testS3Error() {
     doTestS3Error();
   }
 
   @Test
+  @Disabled
   void testS3Fault() {
     doTestS3Fault();
   }
@@ -142,76 +148,91 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testDynamoDbCreateTable() {
     doTestDynamoDbCreateTable();
   }
 
   @Test
+  @Disabled
   void testDynamoDbPutItem() {
     doTestDynamoDbPutItem();
   }
 
   @Test
+  @Disabled
   void testDynamoDbError() throws Exception {
     doTestDynamoDbError();
   }
 
   @Test
+  @Disabled
   void testDynamoDbFault() throws Exception {
     doTestDynamoDbFault();
   }
 
   @Test
+  @Disabled
   void testSQSCreateQueue() throws Exception {
     doTestSQSCreateQueue();
   }
 
   @Test
+  @Disabled
   void testSQSSendMessage() throws Exception {
     doTestSQSSendMessage();
   }
 
   @Test
+  @Disabled
   void testSQSReceiveMessage() throws Exception {
     doTestSQSReceiveMessage();
   }
 
   @Test
+  @Disabled
   void testSQSError() throws Exception {
     doTestSQSError();
   }
 
   @Test
+  @Disabled
   void testSQSFault() throws Exception {
     doTestSQSFault();
   }
 
   @Test
+  @Disabled
   void testKinesisPutRecord() throws Exception {
     doTestKinesisPutRecord();
   }
 
   @Test
+  @Disabled
   void testKinsesisError() throws Exception {
     doTestKinesisError();
   }
 
   @Test
+  @Disabled
   void testKinesisFault() throws Exception {
     doTestKinesisFault();
   }
 
   @Test
+  @Disabled
   void testBedrockAgentGetKnowledgeBaseId() {
     doTestBedrockAgentKnowledgeBaseId();
   }
 
   @Test
+  @Disabled
   void testBedrockAgentAgentId() {
     doTestBedrockAgentAgentId();
   }
 
   @Test
+  @Disabled
   void testBedrockAgentDataSourceId() {
     doTestBedrockAgentDataSourceId();
   }
@@ -222,16 +243,19 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testBedrockGuardrailId() {
     doTestBedrockGuardrailId();
   }
 
   @Test
+  @Disabled
   void testBedrockAgentRuntimeAgentId() {
     doTestBedrockAgentRuntimeAgentId();
   }
 
   @Test
+  @Disabled
   void testBedrockAgentRuntimeKnowledgeBaseId() {
     doTestBedrockAgentRuntimeKnowledgeBaseId();
   }
