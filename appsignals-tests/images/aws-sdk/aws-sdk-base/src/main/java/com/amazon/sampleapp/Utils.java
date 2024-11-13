@@ -188,13 +188,41 @@ public class Utils {
     post(
         "/model/:modelId/invoke",
         (req, res) -> {
-          ObjectNode jsonResponse = objectMapper.createObjectNode();
-          jsonResponse.put("completion", "A simple completion token.");
-          jsonResponse.put("stop_reason", "stop_sequence");
-          jsonResponse.put("stop", "stop_token");
-
+          String modelId = req.params(":modelId");
+          ObjectMapper mapper = new ObjectMapper();
+          ObjectNode jsonResponse = mapper.createObjectNode();
           res.status(status);
           res.type("application/json");
+
+          if (modelId.contains("amazon.titan")) {
+            jsonResponse.put("inputTextTokenCount", 10);
+
+            ArrayNode results = mapper.createArrayNode();
+            ObjectNode result = mapper.createObjectNode();
+            result.put("tokenCount", 15);
+            result.put("completionReason", "FINISHED");
+            results.add(result);
+
+            jsonResponse.set("results", results);
+          } else if (modelId.contains("ai21.jamba")) {
+            ArrayNode choices = mapper.createArrayNode();
+            ObjectNode choice = mapper.createObjectNode();
+            choice.put("finish_reason", "stop");
+
+            ObjectNode message = mapper.createObjectNode();
+            message.put("content", "I am the AI21 Jamba language model");
+            message.put("role", "assistant");
+            choice.set("message", message);
+
+            choices.add(choice);
+            jsonResponse.set("choices", choices);
+
+            ObjectNode usage = mapper.createObjectNode();
+            usage.put("prompt_tokens", 5);
+            usage.put("completion_tokens", 42);
+            jsonResponse.set("usage", usage);
+          }
+
           return jsonResponse;
         });
   }

@@ -368,6 +368,7 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
         .satisfiesOnlyOnce(
             rss -> {
               var span = rss.getSpan();
+              System.out.println("Span: " + span);
               var spanAttributes = span.getAttributesList();
               assertThat(span.getKind()).isEqualTo(spanKind);
               assertThat(span.getName()).isEqualTo(spanName);
@@ -1828,7 +1829,14 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
         200,
         List.of(
             assertAttribute(
-                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "anthropic.claude-v2")));
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "anthropic.claude-v2"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MAX_TOKENS, "100"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.7"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.9")
+        ));
     assertMetricClientAttributes(
         metrics,
         AppSignalsConstants.LATENCY_METRIC,
@@ -1859,6 +1867,91 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
         type,
         identifier,
         0.0);
+  }
+
+  protected void doTestBedrockRuntimeAi21Jamba() {
+    var response = appClient.get("/bedrockruntime/invokeModel/ai21Jamba").aggregate().join();
+    var traces = mockCollectorClient.getTraces();
+    var metrics =
+        mockCollectorClient.getMetrics(
+            Set.of(
+                AppSignalsConstants.ERROR_METRIC,
+                AppSignalsConstants.FAULT_METRIC,
+                AppSignalsConstants.LATENCY_METRIC));
+
+    var localService = getApplicationOtelServiceName();
+    var localOperation = "GET /bedrockruntime/invokeModel/ai21Jamba";
+    String type = "AWS::Bedrock::Model";
+    String identifier = "ai21.jamba-1-5-mini-v1:0";
+    assertSpanClientAttributes(
+        traces,
+        bedrockRuntimeSpanName("InvokeModel"),
+        getBedrockRuntimeRpcServiceName(),
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        "bedrock.test",
+        8080,
+        "http://bedrock.test:8080",
+        200,
+        List.of(
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "ai21.jamba-1-5-mini-v1:0"),
+            assertAttribute(SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.7"),
+            assertAttribute(SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.8"),
+            assertAttribute(SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[stop]"),
+            assertAttribute(SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "5"),
+            assertAttribute(SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "42")
+        ));
+  }
+
+  protected void doTestBedrockRuntimeAmazonTitan() {
+    var response = appClient.get("/bedrockruntime/invokeModel/amazonTitan").aggregate().join();
+    var traces = mockCollectorClient.getTraces();
+    var metrics =
+        mockCollectorClient.getMetrics(
+            Set.of(
+                AppSignalsConstants.ERROR_METRIC,
+                AppSignalsConstants.FAULT_METRIC,
+                AppSignalsConstants.LATENCY_METRIC));
+
+    var localService = getApplicationOtelServiceName();
+    var localOperation = "GET /bedrockruntime/invokeModel/amazonTitan";
+    String type = "AWS::Bedrock::Model";
+    String identifier = "amazon.titan-text-premier-v1:0";
+    assertSpanClientAttributes(
+        traces,
+        bedrockRuntimeSpanName("InvokeModel"),
+        getBedrockRuntimeRpcServiceName(),
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        "bedrock.test",
+        8080,
+        "http://bedrock.test:8080",
+        200,
+        List.of(
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "amazon.titan-text-premier-v1:0"),
+            assertAttribute(
+               SemanticConventionsConstants.GEN_AI_REQUEST_MAX_TOKENS, "100"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.7"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.9"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[FINISHED]"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "10"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "15")
+        ));
   }
 
   protected void doTestBedrockGuardrailId() {

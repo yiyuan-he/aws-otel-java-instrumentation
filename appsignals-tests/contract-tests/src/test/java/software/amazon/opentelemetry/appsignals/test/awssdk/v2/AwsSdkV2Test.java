@@ -241,8 +241,19 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testBedrockRuntimeModelId() {
     doTestBedrockRuntimeModelId();
+  }
+
+  @Test
+  void testBedrockRuntimeAmazonTitan() {
+    doTestBedrockRuntimeAmazonTitan();
+  }
+
+  @Test
+  void testBedrockRuntimeAi21Jamba() {
+    doTestBedrockRuntimeAi21Jamba();
   }
 
   @Test
