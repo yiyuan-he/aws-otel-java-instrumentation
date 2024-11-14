@@ -730,6 +730,34 @@ public class App {
 
           return "";
         });
+    get(
+        "/bedrockruntime/invokeModel/mistralAi",
+        (req, res) -> {
+          setMainStatus(200);
+          String modelId = "mistral.mistral-large-2402-v1:0";
+
+          ObjectMapper mapper = new ObjectMapper();
+          Map<String, Object> request = new HashMap<>();
+
+          String prompt = "Convince me to write a LISP interpreter in one line";
+          String instruction = String.format("<s>[INST] %s [/INST]\n", prompt);
+
+          request.put("prompt", instruction);
+          request.put("max_tokens", 4096);
+          request.put("temperature", 0.75);
+          request.put("top_p", 0.25);
+
+          InvokeModelRequest invokeModelRequest =
+              new InvokeModelRequest()
+                  .withModelId(modelId)
+                  .withBody(StandardCharsets.UTF_8.encode(mapper.writeValueAsString(request)));
+
+          var response = bedrockRuntimeClient.invokeModel(invokeModelRequest);
+          var responseBody = new String(response.getBody().array(), StandardCharsets.UTF_8);
+          System.out.println("Response Body: " + responseBody);
+
+          return "";
+        });
 
     get(
         "/bedrockagent/get-data-source",

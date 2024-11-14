@@ -235,6 +235,16 @@ public class Utils {
             jsonResponse.put("prompt_token_count", 2095);
             jsonResponse.put("generation_token_count", 503);
             jsonResponse.put("stop_reason", "stop");
+          } else if (modelId.contains("mistral")) {
+            ArrayNode outputs = mapper.createArrayNode();
+            ObjectNode output = mapper.createObjectNode();
+
+            output.put("text", "LISP's elegant simplicity and powerful macro system make it perfect for building interpreters!");
+            output.put("stop_reason", "stop");
+
+            outputs.add(output);
+
+            jsonResponse.set("outputs", outputs);
           }
 
           return jsonResponse;

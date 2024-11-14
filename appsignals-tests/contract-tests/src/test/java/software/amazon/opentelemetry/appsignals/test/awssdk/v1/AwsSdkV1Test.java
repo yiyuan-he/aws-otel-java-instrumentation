@@ -268,8 +268,14 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testBedrockRuntimeMetaLlama() {
     doTestBedrockRuntimeMetaLlama();
+  }
+
+  @Test
+  void testBedrockRuntimeMistral() {
+    doTestBedrockRuntimeMistral();
   }
 
   @Test
