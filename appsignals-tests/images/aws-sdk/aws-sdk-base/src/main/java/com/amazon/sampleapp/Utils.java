@@ -231,6 +231,10 @@ public class Utils {
           } else if (modelId.contains("cohere.command")) {
             jsonResponse.put("text", "LISP's elegant simplicity and powerful macro system make it perfect for building interpreters!");
             jsonResponse.put("finish_reason", "COMPLETE");
+          } else if (modelId.contains("meta.llama")) {
+            jsonResponse.put("prompt_token_count", 2095);
+            jsonResponse.put("generation_token_count", 503);
+            jsonResponse.put("stop_reason", "stop");
           }
 
           return jsonResponse;

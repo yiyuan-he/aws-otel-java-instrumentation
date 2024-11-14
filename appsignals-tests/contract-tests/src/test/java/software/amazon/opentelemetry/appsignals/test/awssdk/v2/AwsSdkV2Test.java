@@ -271,6 +271,12 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
 
   @Test
   @Disabled
+  void testBedrockRuntimeMetaLlama() {
+    doTestBedrockRuntimeMetaLlama();
+  }
+
+  @Test
+  @Disabled
   void testBedrockGuardrailId() {
     doTestBedrockGuardrailId();
   }

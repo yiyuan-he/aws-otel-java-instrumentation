@@ -2049,6 +2049,54 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
         ));
   }
 
+  protected void doTestBedrockRuntimeMetaLlama() {
+    var response = appClient.get("/bedrockruntime/invokeModel/metaLlama").aggregate().join();
+
+    var traces = mockCollectorClient.getTraces();
+    var metrics = mockCollectorClient.getMetrics(
+        Set.of(
+            AppSignalsConstants.ERROR_METRIC,
+            AppSignalsConstants.FAULT_METRIC,
+            AppSignalsConstants.LATENCY_METRIC)
+    );
+
+    var localService = getApplicationOtelServiceName();
+    var localOperation = "GET /bedrockruntime/invokeModel/metaLlama";
+    String type = "AWS::Bedrock::Model";
+    String identifier = "meta.llama3-70b-instruct-v1:0";
+
+    assertSpanClientAttributes(
+        traces,
+        bedrockRuntimeSpanName("InvokeModel"),
+        getBedrockRuntimeRpcServiceName(),
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        "bedrock.test",
+        8080,
+        "http://bedrock.test:8080",
+        200,
+        List.of(
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "meta.llama3-70b-instruct-v1:0"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MAX_TOKENS, "128"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.1"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.9"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[stop]"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "2095"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "503")
+        ));
+  }
+
   protected void doTestBedrockGuardrailId() {
     var response = appClient.get("/bedrock/getguardrail").aggregate().join();
     var traces = mockCollectorClient.getTraces();

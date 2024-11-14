@@ -699,6 +699,37 @@ public class App {
 
           return "";
         });
+    get(
+        "/bedrockruntime/invokeModel/metaLlama",
+        (req, res) -> {
+          setMainStatus(200);
+          String modelId = "meta.llama3-70b-instruct-v1:0";
+
+          ObjectMapper mapper = new ObjectMapper();
+          Map<String, Object> request = new HashMap<>();
+
+          String prompt = "Describe the purpose of a 'hello world' program in one line";
+          String instruction = String.format(
+              "<|begin_of_text|><|start_header_id|>user<|end_header_id|>\n%s<|eot_id|>\n<|start_header_id|>assistant<|end_header_id|>\n",
+              prompt
+          );
+
+          request.put("prompt", instruction);
+          request.put("max_gen_len", 128);
+          request.put("temperature", 0.1);
+          request.put("top_p", 0.9);
+
+          InvokeModelRequest invokeModelRequest =
+              new InvokeModelRequest()
+                  .withModelId(modelId)
+                  .withBody(StandardCharsets.UTF_8.encode(mapper.writeValueAsString(request)));
+
+          var response = bedrockRuntimeClient.invokeModel(invokeModelRequest);
+          var responseBody = new String(response.getBody().array(), StandardCharsets.UTF_8);
+          System.out.println("Response Body: " + responseBody);
+
+          return "";
+        });
 
     get(
         "/bedrockagent/get-data-source",

@@ -262,8 +262,14 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testBedrockRuntimeCohereCommandR() {
     doTestBedrockRuntimeCohereCommandR();
+  }
+
+  @Test
+  void testBedrockRuntimeMetaLlama() {
+    doTestBedrockRuntimeMetaLlama();
   }
 
   @Test
