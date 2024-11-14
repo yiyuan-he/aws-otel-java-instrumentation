@@ -1906,6 +1906,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "5"),
             assertAttribute(SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "42")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockRuntimeAmazonTitan() {
@@ -1952,6 +1982,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "15")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockRuntimeAnthropicClaude() {
@@ -2000,6 +2060,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "503")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockRuntimeCohereCommandR() {
@@ -2047,6 +2137,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "16")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockRuntimeMetaLlama() {
@@ -2095,6 +2215,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "503")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockRuntimeMistral() {
