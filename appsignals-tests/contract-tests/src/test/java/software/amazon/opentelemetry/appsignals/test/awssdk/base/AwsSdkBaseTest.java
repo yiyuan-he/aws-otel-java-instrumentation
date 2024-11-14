@@ -1954,6 +1954,101 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
         ));
   }
 
+  protected void doTestBedrockRuntimeAnthropicClaude() {
+    var response = appClient.get("/bedrockruntime/invokeModel/anthropicClaude").aggregate().join();
+
+    var traces = mockCollectorClient.getTraces();
+    var metrics = mockCollectorClient.getMetrics(
+        Set.of(
+            AppSignalsConstants.ERROR_METRIC,
+            AppSignalsConstants.FAULT_METRIC,
+            AppSignalsConstants.LATENCY_METRIC
+        ));
+
+    var localService = getApplicationOtelServiceName();
+    var localOperation = "GET /bedrockruntime/invokeModel/anthropicClaude";
+    String type = "AWS::Bedrock::Model";
+    String identifier = "anthropic.claude-3-haiku-20240307-v1:0";
+
+    assertSpanClientAttributes(
+        traces,
+        bedrockRuntimeSpanName("InvokeModel"),
+        getBedrockRuntimeRpcServiceName(),
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        "bedrock.test",
+        8080,
+        "http://bedrock.test:8080",
+        200,
+        List.of(
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL,  "anthropic.claude-3-haiku-20240307-v1:0"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MAX_TOKENS, "512"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.6"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.53"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[end_turn]"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "2095"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "503")
+        ));
+  }
+
+  protected void doTestBedrockRuntimeCohereCommandR() {
+    var response = appClient.get("/bedrockruntime/invokeModel/cohereCommandR").aggregate().join();
+
+    var traces = mockCollectorClient.getTraces();
+    var metrics = mockCollectorClient.getMetrics(
+        Set.of(
+            AppSignalsConstants.ERROR_METRIC,
+            AppSignalsConstants.FAULT_METRIC,
+            AppSignalsConstants.LATENCY_METRIC));
+
+    var localService = getApplicationOtelServiceName();
+    var localOperation = "GET /bedrockruntime/invokeModel/cohereCommandR";
+    String type = "AWS::Bedrock::Model";
+    String identifier = "cohere.command-r-v1:0";
+
+    assertSpanClientAttributes(
+        traces,
+        bedrockRuntimeSpanName("InvokeModel"),
+        getBedrockRuntimeRpcServiceName(),
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        "bedrock.test",
+        8080,
+        "http://bedrock.test:8080",
+        200,
+        List.of(
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MODEL, "cohere.command-r-v1:0"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_MAX_TOKENS, "4096"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TEMPERATURE, "0.8"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_REQUEST_TOP_P, "0.45"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[COMPLETE]"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "9"),
+            assertAttribute(
+                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "16")
+        ));
+  }
+
   protected void doTestBedrockGuardrailId() {
     var response = appClient.get("/bedrock/getguardrail").aggregate().join();
     var traces = mockCollectorClient.getTraces();

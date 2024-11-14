@@ -657,6 +657,57 @@ public class App {
           return "";
         });
     get(
+        "/bedrockruntime/invokeModel/anthropicClaude",
+        (req, res) -> {
+          setMainStatus(200);
+
+          ObjectMapper mapper = new ObjectMapper();
+          Map<String, Object> request = new HashMap<>();
+
+          List<Map<String, String>> messages = new ArrayList<>();
+          Map<String, String> message = new HashMap<>();
+          message.put("role", "user");
+          message.put("content", "Describe a cache in one line");
+          messages.add(message);
+
+          request.put("messages", messages);
+          request.put("anthropic_version", "bedrock-2023-05-31");
+          request.put("max_tokens", 512);
+          request.put("top_p", 0.53);
+          request.put("temperature", 0.6);
+
+          InvokeModelRequest invokeModelRequest = InvokeModelRequest.builder()
+              .modelId("anthropic.claude-3-haiku-20240307-v1:0")
+              .body(SdkBytes.fromUtf8String(mapper.writeValueAsString(request)))
+              .build();
+
+          bedrockRuntimeClient.invokeModel(invokeModelRequest);
+
+          return "";
+        });
+    get(
+        "/bedrockruntime/invokeModel/cohereCommandR",
+        (req, res) -> {
+          setMainStatus(200);
+
+          ObjectMapper mapper = new ObjectMapper();
+          Map<String, Object> request = new HashMap<>();
+
+          request.put("message", "Convince me to write a LISP interpreter in one line");
+          request.put("temperature", 0.8);
+          request.put("max_tokens", 4096);
+          request.put("p", 0.45);
+
+          InvokeModelRequest invokeModelRequest = InvokeModelRequest.builder()
+              .modelId("cohere.command-r-v1:0")
+              .body(SdkBytes.fromUtf8String(mapper.writeValueAsString(request)))
+              .build();
+
+          bedrockRuntimeClient.invokeModel(invokeModelRequest);
+
+          return "";
+        });
+    get(
         "/bedrockagent/get-data-source",
         (req, res) -> {
           setMainStatus(200);

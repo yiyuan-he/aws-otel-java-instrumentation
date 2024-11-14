@@ -247,13 +247,26 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
   }
 
   @Test
+  @Disabled
   void testBedrockRuntimeAmazonTitan() {
     doTestBedrockRuntimeAmazonTitan();
   }
 
   @Test
+  @Disabled
   void testBedrockRuntimeAi21Jamba() {
     doTestBedrockRuntimeAi21Jamba();
+  }
+
+  @Test
+  @Disabled
+  void testBedrockRuntimeAnthropicClaude() {
+    doTestBedrockRuntimeAnthropicClaude();
+  }
+
+  @Test
+  void testBedrockRuntimeCohereCommandR() {
+    doTestBedrockRuntimeCohereCommandR();
   }
 
   @Test

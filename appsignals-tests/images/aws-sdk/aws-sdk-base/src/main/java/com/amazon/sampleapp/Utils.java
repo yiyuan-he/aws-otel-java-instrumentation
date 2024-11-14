@@ -221,6 +221,16 @@ public class Utils {
             usage.put("prompt_tokens", 5);
             usage.put("completion_tokens", 42);
             jsonResponse.set("usage", usage);
+          } else if (modelId.contains("anthropic.claude")) {
+            jsonResponse.put("stop_reason", "end_turn");
+
+            ObjectNode usage = mapper.createObjectNode();
+            usage.put("input_tokens", 2095);
+            usage.put("output_tokens", 503);
+            jsonResponse.set("usage", usage);
+          } else if (modelId.contains("cohere.command")) {
+            jsonResponse.put("text", "LISP's elegant simplicity and powerful macro system make it perfect for building interpreters!");
+            jsonResponse.put("finish_reason", "COMPLETE");
           }
 
           return jsonResponse;
