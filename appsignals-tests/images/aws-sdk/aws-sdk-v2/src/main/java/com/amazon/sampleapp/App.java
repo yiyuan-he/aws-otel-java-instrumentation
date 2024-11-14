@@ -736,6 +736,31 @@ public class App {
           return "";
         });
     get(
+        "/bedrockruntime/invokeModel/mistralAi",
+        (req, res) -> {
+          setMainStatus(200);
+
+          ObjectMapper mapper = new ObjectMapper();
+          Map<String, Object> request = new HashMap<>();
+
+          String prompt = "Describe the difference between a compiler and interpreter in one line.";
+          String instruction = String.format("<s>[INST] %s [/INST]\n", prompt);
+
+          request.put("prompt", instruction);
+          request.put("max_tokens", 4096);
+          request.put("temperature", 0.75);
+          request.put("top_p", 0.25);
+
+          InvokeModelRequest invokeModelRequest = InvokeModelRequest.builder()
+              .modelId("mistral.mistral-large-2402-v1:0")
+              .body(SdkBytes.fromUtf8String(mapper.writeValueAsString(request)))
+              .build();
+
+          bedrockRuntimeClient.invokeModel(invokeModelRequest);
+
+          return "";
+        });
+    get(
         "/bedrockagent/get-data-source",
         (req, res) -> {
           setMainStatus(200);

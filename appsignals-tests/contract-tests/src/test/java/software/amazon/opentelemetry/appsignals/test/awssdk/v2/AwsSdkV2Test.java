@@ -277,7 +277,6 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
   }
 
   @Test
-  @Disabled
   void testBedrockRuntimeMistral() {
     doTestBedrockRuntimeMistral();
   }
