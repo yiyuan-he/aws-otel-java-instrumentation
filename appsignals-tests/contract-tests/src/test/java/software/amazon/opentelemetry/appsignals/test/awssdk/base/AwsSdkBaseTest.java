@@ -2143,6 +2143,36 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "24")
         ));
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.LATENCY_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        5000.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.FAULT_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
+    assertMetricClientAttributes(
+        metrics,
+        AppSignalsConstants.ERROR_METRIC,
+        localService,
+        localOperation,
+        getBedrockRuntimeServiceName(),
+        "InvokeModel",
+        type,
+        identifier,
+        0.0);
   }
 
   protected void doTestBedrockGuardrailId() {
