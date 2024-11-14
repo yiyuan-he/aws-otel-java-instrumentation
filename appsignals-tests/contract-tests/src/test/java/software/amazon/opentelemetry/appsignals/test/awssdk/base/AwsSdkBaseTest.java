@@ -2139,9 +2139,9 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
             assertAttribute(
                 SemanticConventionsConstants.GEN_AI_RESPONSE_FINISH_REASONS, "[stop]"),
             assertAttribute(
-                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "12"),
+                SemanticConventionsConstants.GEN_AI_USAGE_INPUT_TOKENS, "15"),
             assertAttribute(
-                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "16")
+                SemanticConventionsConstants.GEN_AI_USAGE_OUTPUT_TOKENS, "24")
         ));
   }
 

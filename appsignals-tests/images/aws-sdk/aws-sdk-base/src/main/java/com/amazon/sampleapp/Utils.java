@@ -239,7 +239,7 @@ public class Utils {
             ArrayNode outputs = mapper.createArrayNode();
             ObjectNode output = mapper.createObjectNode();
 
-            output.put("text", "LISP's elegant simplicity and powerful macro system make it perfect for building interpreters!");
+            output.put("text", "A compiler translates the entire source code to machine code before execution, while an interpreter executes the code line by line in real-time.");
             output.put("stop_reason", "stop");
 
             outputs.add(output);

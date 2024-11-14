@@ -739,7 +739,7 @@ public class App {
           ObjectMapper mapper = new ObjectMapper();
           Map<String, Object> request = new HashMap<>();
 
-          String prompt = "Convince me to write a LISP interpreter in one line";
+          String prompt = "Describe the difference between a compiler and interpreter in one line.";
           String instruction = String.format("<s>[INST] %s [/INST]\n", prompt);
 
           request.put("prompt", instruction);
