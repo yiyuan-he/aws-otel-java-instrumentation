@@ -597,7 +597,8 @@ public class App {
           try {
             var describeRequest =
                 DescribeSecretRequest.builder()
-                    .secretId("arn:aws:secretsmanager:us-west-2:000000000000:secret:nonexistent-secret-id")
+                    .secretId(
+                        "arn:aws:secretsmanager:us-west-2:000000000000:secret:nonexistent-secret-id")
                     .build();
             errorClient.describeSecret(describeRequest);
           } catch (Exception e) {
@@ -619,7 +620,8 @@ public class App {
           try {
             var describeRequest =
                 DescribeSecretRequest.builder()
-                    .secretId("arn:aws:secretsmanager:us-west-2:000000000000:secret:fault-secret-id")
+                    .secretId(
+                        "arn:aws:secretsmanager:us-west-2:000000000000:secret:fault-secret-id")
                     .build();
             faultClient.describeSecret(describeRequest);
           } catch (Exception e) {
@@ -718,8 +720,7 @@ public class App {
               .definition(stateMachineDefinition)
               .type(StateMachineType.STANDARD)
               .build();
-      existingStateMachineArn =
-          sfnClient.createStateMachine(sfnRequest).stateMachineArn();
+      existingStateMachineArn = sfnClient.createStateMachine(sfnRequest).stateMachineArn();
     }
 
     var activityName = "test-activity";
@@ -782,7 +783,8 @@ public class App {
           try {
             var describeRequest =
                 DescribeActivityRequest.builder()
-                    .activityArn("arn:aws:states:us-west-2:000000000000:activity:nonexistent-activity")
+                    .activityArn(
+                        "arn:aws:states:us-west-2:000000000000:activity:nonexistent-activity")
                     .build();
             errorClient.describeActivity(describeRequest);
           } catch (Exception e) {

@@ -44,6 +44,7 @@ import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
 import com.amazonaws.services.dynamodbv2.model.KeyType;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
 import com.amazonaws.services.dynamodbv2.model.PutItemRequest;
+import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
 import com.amazonaws.services.identitymanagement.model.CreateRoleRequest;
 import com.amazonaws.services.identitymanagement.model.PutRolePolicyRequest;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
@@ -59,13 +60,12 @@ import com.amazonaws.services.secretsmanager.model.CreateSecretRequest;
 import com.amazonaws.services.secretsmanager.model.DescribeSecretRequest;
 import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
 import com.amazonaws.services.secretsmanager.model.SecretListEntry;
-import com.amazonaws.services.stepfunctions.AWSStepFunctionsClient;
-import com.amazonaws.services.stepfunctions.model.*;
-import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
+import com.amazonaws.services.stepfunctions.AWSStepFunctionsClient;
+import com.amazonaws.services.stepfunctions.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
@@ -570,22 +570,27 @@ public class App {
         });
 
     get(
-          "/secretsmanager/error",
+        "/secretsmanager/error",
         (req, res) -> {
-            setMainStatus(400);
-            var errorClient =
-                AWSSecretsManagerClient.builder()
-                    .withCredentials(CREDENTIALS_PROVIDER)
-                    .withEndpointConfiguration(new EndpointConfiguration("http://error.test:8080", Regions.US_WEST_2.getName()))
-                    .build();
+          setMainStatus(400);
+          var errorClient =
+              AWSSecretsManagerClient.builder()
+                  .withCredentials(CREDENTIALS_PROVIDER)
+                  .withEndpointConfiguration(
+                      new EndpointConfiguration(
+                          "http://error.test:8080", Regions.US_WEST_2.getName()))
+                  .build();
 
-            try {
-              var describeRequest = new DescribeSecretRequest().withSecretId("arn:aws:secretsmanager:us-west-2:000000000000:secret:nonexistent-secret-id");
-              errorClient.describeSecret(describeRequest);
-            } catch (Exception e) {
-              logger.debug("Error describing secret", e);
-            }
-            return "";
+          try {
+            var describeRequest =
+                new DescribeSecretRequest()
+                    .withSecretId(
+                        "arn:aws:secretsmanager:us-west-2:000000000000:secret:nonexistent-secret-id");
+            errorClient.describeSecret(describeRequest);
+          } catch (Exception e) {
+            logger.debug("Error describing secret", e);
+          }
+          return "";
         });
 
     get(
@@ -595,16 +600,21 @@ public class App {
           var faultClient =
               AWSSecretsManagerClient.builder()
                   .withCredentials(CREDENTIALS_PROVIDER)
-                  .withEndpointConfiguration(new EndpointConfiguration("http://fault.test:8080", Regions.US_WEST_2.getName()))
+                  .withEndpointConfiguration(
+                      new EndpointConfiguration(
+                          "http://fault.test:8080", Regions.US_WEST_2.getName()))
                   .build();
 
           try {
-            var describeRequest = new DescribeSecretRequest().withSecretId("arn:aws:secretsmanager:us-west-2:000000000000:secret:fault-secret-id");
+            var describeRequest =
+                new DescribeSecretRequest()
+                    .withSecretId(
+                        "arn:aws:secretsmanager:us-west-2:000000000000:secret:fault-secret-id");
             faultClient.describeSecret(describeRequest);
           } catch (Exception e) {
             logger.debug("Error describing secret", e);
           }
-          return"";
+          return "";
         });
   }
 
@@ -728,7 +738,8 @@ public class App {
     get(
         "/sfn/describestatemachine/:name",
         (req, res) -> {
-          var describeRequest = new DescribeStateMachineRequest().withStateMachineArn(finalExistingStateMachineArn);
+          var describeRequest =
+              new DescribeStateMachineRequest().withStateMachineArn(finalExistingStateMachineArn);
           stepFunctionsClient.describeStateMachine(describeRequest);
           return "";
         });
@@ -736,7 +747,8 @@ public class App {
     get(
         "/sfn/describeactivity/:name",
         (req, res) -> {
-          var describeRequest = new DescribeActivityRequest().withActivityArn(finalExistingActivityArn);
+          var describeRequest =
+              new DescribeActivityRequest().withActivityArn(finalExistingActivityArn);
           stepFunctionsClient.describeActivity(describeRequest);
           return "";
         });
@@ -749,13 +761,15 @@ public class App {
               AWSStepFunctionsClient.builder()
                   .withCredentials(CREDENTIALS_PROVIDER)
                   .withEndpointConfiguration(
-                      new EndpointConfiguration("http://error.test:8080", Regions.US_WEST_2.getName()))
+                      new EndpointConfiguration(
+                          "http://error.test:8080", Regions.US_WEST_2.getName()))
                   .build();
 
           try {
             var describeRequest =
                 new DescribeActivityRequest()
-                    .withActivityArn("arn:aws:states:us-west-2:000000000000:activity:nonexistent-activity");
+                    .withActivityArn(
+                        "arn:aws:states:us-west-2:000000000000:activity:nonexistent-activity");
             errorClient.describeActivity(describeRequest);
           } catch (Exception e) {
             logger.error("Error describing activity", e);
@@ -771,13 +785,15 @@ public class App {
               AWSStepFunctionsClient.builder()
                   .withCredentials(CREDENTIALS_PROVIDER)
                   .withEndpointConfiguration(
-                      new EndpointConfiguration("http://fault.test:8080", Regions.US_WEST_2.getName()))
+                      new EndpointConfiguration(
+                          "http://fault.test:8080", Regions.US_WEST_2.getName()))
                   .build();
 
           try {
             var describeRequest =
                 new DescribeActivityRequest()
-                    .withActivityArn("arn:aws:states:us-west-2:000000000000:activity:fault-activity");
+                    .withActivityArn(
+                        "arn:aws:states:us-west-2:000000000000:activity:fault-activity");
             faultClient.describeActivity(describeRequest);
           } catch (Exception e) {
             logger.error("Error describing activity", e);

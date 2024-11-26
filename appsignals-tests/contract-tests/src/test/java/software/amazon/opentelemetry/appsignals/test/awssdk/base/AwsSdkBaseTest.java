@@ -23,7 +23,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.assertj.core.api.ThrowingConsumer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -166,7 +165,9 @@ public abstract class AwsSdkBaseTest extends ContractTestBase {
     return "AWS::SecretsManager";
   }
 
-  private String getStepFunctionsServiceName() { return "AWS::StepFunctions"; }
+  private String getStepFunctionsServiceName() {
+    return "AWS::StepFunctions";
+  }
 
   private String s3SpanName(String operation) {
     return String.format("%s.%s", getS3SpanNamePrefix(), operation);
