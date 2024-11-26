@@ -315,4 +315,6 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   void testStepFunctionsFault() throws Exception {
     doTestStepFunctionsFault();
   }
+
+  // TODO: Set up SNS tests
 }
