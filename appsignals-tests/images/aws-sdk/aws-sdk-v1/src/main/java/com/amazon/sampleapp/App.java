@@ -60,6 +60,11 @@ import com.amazonaws.services.secretsmanager.model.CreateSecretRequest;
 import com.amazonaws.services.secretsmanager.model.DescribeSecretRequest;
 import com.amazonaws.services.secretsmanager.model.ListSecretsRequest;
 import com.amazonaws.services.secretsmanager.model.SecretListEntry;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.model.CreateTopicRequest;
+import com.amazonaws.services.sns.model.GetTopicAttributesRequest;
+import com.amazonaws.services.sns.model.ListTopicsRequest;
+import com.amazonaws.services.sns.model.Topic;
 import com.amazonaws.services.sqs.AmazonSQSClient;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.ReceiveMessageRequest;
@@ -145,6 +150,7 @@ public class App {
     setupKinesis();
     setupSecretsManager();
     setupStepFunctions();
+    setupSns();
     setupBedrock();
 
     // Add this log line so that we only start testing after all routes are configured.
@@ -805,6 +811,87 @@ public class App {
             faultClient.describeActivity(describeRequest);
           } catch (Exception e) {
             logger.error("Error describing activity", e);
+          }
+          return "";
+        });
+  }
+
+  private static void setupSns() {
+    var snsClient = AmazonSNSClient.builder()
+        .withCredentials(CREDENTIALS_PROVIDER)
+        .withEndpointConfiguration(endpointConfiguration)
+        .build();
+
+    var topicName = "test-topic";
+    String existingTopicArn = null;
+
+    try {
+      var listTopicsRequest = new ListTopicsRequest();
+      var listTopicsResult = snsClient.listTopics(listTopicsRequest);
+      existingTopicArn = listTopicsResult.getTopics().stream()
+          .filter(topic -> topic.getTopicArn().contains(topicName))
+          .findFirst()
+          .map(Topic::getTopicArn)
+          .orElse(null);
+    } catch (Exception e) {
+      logger.error("Error listing topics", e);
+    }
+
+    if (existingTopicArn != null) {
+      logger.debug("Topic already exists, skipping creation");
+    } else {
+      logger.debug("Topic does not exist, creating new one");
+      var createTopicRequest = new CreateTopicRequest().withName(topicName);
+      var createTopicResult = snsClient.createTopic(createTopicRequest);
+      existingTopicArn = createTopicResult.getTopicArn();
+    }
+
+    String finalExistingTopicArn = existingTopicArn;
+    get(
+        "/sns/gettopicattributes/:topicId",
+        (req, res) -> {
+          var getTopicAttributesRequest = new GetTopicAttributesRequest().withTopicArn(finalExistingTopicArn);
+          snsClient.getTopicAttributes(getTopicAttributesRequest);
+          return "";
+        });
+
+    get(
+        "/sns/error",
+        (req, res) -> {
+          setMainStatus(400);
+          var errorClient = AmazonSNSClient.builder()
+              .withCredentials(CREDENTIALS_PROVIDER)
+              .withEndpointConfiguration(
+                  new EndpointConfiguration("https://error.test:8080", Regions.US_WEST_2.getName()))
+              .build();
+
+          try {
+            var getTopicAttributesRequest = new GetTopicAttributesRequest()
+                .withTopicArn("arn:aws:sns:us-west-2:000000000000:nonexistent-topic");
+            errorClient.getTopicAttributes(getTopicAttributesRequest);
+          } catch (Exception e) {
+            logger.error("Error describing topic", e);
+          }
+          return "";
+        });
+
+    get(
+        "/sns/fault",
+        (req, res) -> {
+          setMainStatus(500);
+          var faultClient = AmazonSNSClient.builder()
+              .withCredentials(CREDENTIALS_PROVIDER)
+              .withEndpointConfiguration(
+                  new EndpointConfiguration(
+                      "http://fault.test:8080", Regions.US_WEST_2.getName()))
+              .build();
+
+          try {
+            var getTopicAttributesRequest = new GetTopicAttributesRequest()
+                .withTopicArn("arn:aws:sns:us-west-2:000000000000:fault-topic");
+            faultClient.getTopicAttributes(getTopicAttributesRequest);
+          } catch (Exception e) {
+            logger.error("Error describing topic", e);
           }
           return "";
         });

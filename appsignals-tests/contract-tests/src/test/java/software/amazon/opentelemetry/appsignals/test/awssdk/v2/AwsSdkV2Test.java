@@ -86,6 +86,11 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
   }
 
   @Override
+  protected String getSnsSpanNamePrefix() {
+    return "Sns";
+  }
+
+  @Override
   protected String getS3RpcServiceName() {
     return "S3";
   }
@@ -132,6 +137,11 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
   @Override
   protected String getStepFunctionsRpcServiceName() {
     return "Sfn";
+  }
+
+  @Override
+  protected String getSnsRpcServiceName() {
+    return "Sns";
   }
 
   @Test
@@ -319,5 +329,18 @@ public class AwsSdkV2Test extends AwsSdkBaseTest {
     doTestStepFunctionsFault();
   }
 
-  // TODO: Set up SNS tests
+  @Test
+  void testSnsGetTopicAttributes() throws Exception {
+    doTestSnsGetTopicAttributes();
+  }
+
+  @Test
+  void testSnsError() throws Exception {
+    doTestStepFunctionsError();
+  }
+
+  @Test
+  void testSnsFault() throws Exception {
+    doTestStepFunctionsFault();
+  }
 }

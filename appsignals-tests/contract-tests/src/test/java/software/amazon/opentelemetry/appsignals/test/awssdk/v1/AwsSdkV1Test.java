@@ -86,6 +86,11 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
     return "AWSStepFunctions";
   }
 
+  @Override
+  protected String getSnsSpanNamePrefix() {
+    return "SNS";
+  }
+
   protected String getS3RpcServiceName() {
     return "Amazon S3";
   }
@@ -108,6 +113,11 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
   @Override
   protected String getStepFunctionsRpcServiceName() {
     return "AWSStepFunctions";
+  }
+
+  @Override
+  protected String getSnsRpcServiceName() {
+    return "AmazonSNS";
   }
 
   protected String getKinesisRpcServiceName() {
@@ -316,5 +326,18 @@ public class AwsSdkV1Test extends AwsSdkBaseTest {
     doTestStepFunctionsFault();
   }
 
-  // TODO: Set up SNS tests
+  @Test
+  void testSnsGetTopicAttributes() throws Exception {
+    doTestSnsGetTopicAttributes();
+  }
+
+  @Test
+  void testSnsError() throws Exception {
+    doTestStepFunctionsError();
+  }
+
+  @Test
+  void testSnsFault() throws Exception {
+    doTestStepFunctionsFault();
+  }
 }

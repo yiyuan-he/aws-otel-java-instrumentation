@@ -86,10 +86,15 @@ import software.amazon.awssdk.services.sfn.model.ListActivitiesRequest;
 import software.amazon.awssdk.services.sfn.model.ListStateMachinesRequest;
 import software.amazon.awssdk.services.sfn.model.StateMachineListItem;
 import software.amazon.awssdk.services.sfn.model.StateMachineType;
+import software.amazon.awssdk.services.sns.model.CreateTopicRequest;
+import software.amazon.awssdk.services.sns.model.GetTopicAttributesRequest;
+import software.amazon.awssdk.services.sns.model.ListTopicsRequest;
+import software.amazon.awssdk.services.sns.model.Topic;
 import software.amazon.awssdk.services.sqs.SqsClient;
 import software.amazon.awssdk.services.sqs.model.CreateQueueRequest;
 import software.amazon.awssdk.services.sqs.model.ReceiveMessageRequest;
 import software.amazon.awssdk.services.sqs.model.SendMessageRequest;
+import software.amazon.awssdk.services.sns.SnsClient;
 
 public class App {
   static final Logger logger = LoggerFactory.getLogger(App.class);
@@ -142,6 +147,7 @@ public class App {
     setupSecretsManager();
     setupSfn();
     setupBedrock();
+    setupSns();
     // Add this log line so that we only start testing after all routes are configured.
     awaitInitialization();
     logger.info("All routes initialized");
@@ -819,6 +825,88 @@ public class App {
             faultClient.describeActivity(describeRequest);
           } catch (Exception e) {
             logger.error("Error describing activity", e);
+          }
+          return "";
+        });
+  }
+
+  private static void setupSns() {
+    var snsClient = SnsClient.builder()
+        .endpointOverride(endpoint)
+        .credentialsProvider(CREDENTIALS_PROVIDER)
+        .build();
+
+    var topicName = "test-topic";
+    String existingTopicArn = null;
+
+    try {
+      var listRequest = ListTopicsRequest.builder().build();
+      var listResponse = snsClient.listTopics(listRequest);
+      existingTopicArn = listResponse.topics().stream()
+          .filter(topic -> topic.topicArn().contains(topicName))
+          .findFirst()
+          .map(Topic::topicArn)
+          .orElse(null);
+    } catch (Exception e) {
+      logger.error("Error listing topics", e);
+    }
+
+    if (existingTopicArn != null) {
+      logger.debug("Topics already exists, skipping creation");
+    } else {
+      logger.debug("Topics not found, creating a new one");
+      var createTopicRequest = CreateTopicRequest.builder().name(topicName).build();
+      var createTopicResponse = snsClient.createTopic(createTopicRequest);
+      existingTopicArn = createTopicResponse.topicArn();
+    }
+
+    String finalExistingTopicArn = existingTopicArn;
+    get(
+        "/sns/gettopicattributes/:topicId",
+        (req, res) -> {
+          var getTopicAttributesRequest = GetTopicAttributesRequest.builder()
+              .topicArn(finalExistingTopicArn)
+              .build();
+          snsClient.getTopicAttributes(getTopicAttributesRequest);
+          return "";
+        });
+
+    get(
+        "/sns/error",
+        (req, res) -> {
+          setMainStatus(400);
+          var errorClient = SnsClient.builder()
+              .endpointOverride(URI.create("http://error.test:8080"))
+              .credentialsProvider(CREDENTIALS_PROVIDER)
+              .build();
+
+          try {
+            var getTopicAttributesRequest = GetTopicAttributesRequest.builder()
+                .topicArn("arn:aws:sns:us-west-2:000000000000:nonexistent-topic")
+                .build();
+            errorClient.getTopicAttributes(getTopicAttributesRequest);
+          } catch (Exception e) {
+            logger.error("Error describing topic", e);
+          }
+          return "";
+        });
+
+    get(
+        "/sns/fault",
+        (req, res) -> {
+          setMainStatus(500);
+          var faultClient = SnsClient.builder()
+              .endpointOverride(URI.create("http://fault.test:8080"))
+              .credentialsProvider(CREDENTIALS_PROVIDER)
+              .build();
+
+          try {
+            var getTopicAttributesRequest = GetTopicAttributesRequest.builder()
+                .topicArn("arn:aws:sns:us-west-2:000000000000:fault-topic")
+                .build();
+            faultClient.getTopicAttributes(getTopicAttributesRequest);
+          } catch (Exception e) {
+            logger.error("Error describing topic", e);
           }
           return "";
         });
