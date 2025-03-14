@@ -1,0 +1,30 @@
+name: Release ADOT OTLP UDP Exporter
+
+on:
+  push:
+    branches:
+      - "udp-exporter-release-workflow"
+    workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number for deployment e.g. 0.0.1'
+        required: true
+        type: string
+
+jobs:
+  build-test-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Build UDP exporter
+        working-directory: exporters/aws-otel-otlp-udp-exporter
+        run: |
+          gradle build
