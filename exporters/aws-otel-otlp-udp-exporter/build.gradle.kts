@@ -20,7 +20,7 @@ plugins {
 }
 
 group = "software.amazon.opentelemetry.exporters.otlp.udp"
-version = "0.0.1"
+version = "0.1.0"
 
 dependencies {
   implementation(platform("io.opentelemetry.instrumentation:opentelemetry-instrumentation-bom-alpha:2.11.0-alpha"))
